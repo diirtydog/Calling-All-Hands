@@ -1,0 +1,25 @@
+{
+  "name": "calling-all-hands",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diirtydog/Calling-All-Hands.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diirtydog/Calling-All-Hands/issues"
+  },
+  "homepage": "https://github.com/diirtydog/Calling-All-Hands#readme",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  }
+}
