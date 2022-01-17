@@ -57,6 +57,7 @@ const promptHands = () => {
 }
 
 const promptEngineer = () => {
+
     return inquirer.prompt([
         {
             type: 'input',
@@ -88,13 +89,14 @@ const promptEngineer = () => {
     .then ((data) => {
         var engineer = new Engineer(data);
         engineers.push(engineer);
+        console.log(engineers);
         return data;
     })
     .then(({ confirmAdd }) => {  
         if (confirmAdd) {
             promptHands();
         } else {
-            generateEngineer(engineers);
+           return generateEngineer(engineers);
         };
     })
 }
@@ -125,7 +127,7 @@ const promptIntern = () => {
             type: 'confirm',
             name: 'confirmAdd',
             message: 'Would you like to add another employee to the current team?',
-            default: true
+            default: false
         }
     ])
     .then ((data) => {
@@ -137,7 +139,7 @@ const promptIntern = () => {
         if (confirmAdd) {
             promptHands();
         } else {
-            generateIntern();
+            return generateIntern(data);
         }
     });
 }
@@ -151,6 +153,7 @@ function init() {
         return data;
     })
     .then(promptHands)
+    
     
 }
     

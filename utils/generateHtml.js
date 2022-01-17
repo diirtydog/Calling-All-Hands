@@ -1,28 +1,31 @@
+const Engineer = require("../lib/Engineer");
 
 
-function generateManager(data) {
-    console.log(managers);
+function generateManager(managers) {
+    //console.log(managers);
 }
 
-function generateEngineer(engineers) {
-    //console.log(engineers);
+const generateEngineer = (data) => {
+    console.log(data)
     return `
         <section class="card">
-            <h2>${engineers.name}</h2>
-            <h3>${engineers.role}</h3>
-            <h4>Employee ID:${engineers.id}</h4>
-            <h4>GitHub https://github.com/${engineers.github}</h4>
+            <h2>${data.name}</h2>
+            <h3>${data.role}</h3>
+            <h4>Employee ID:${data.id}</h4>
+            <h4>GitHub https://github.com/${data.github}</h4>
+        </section>
         `;
 }
 
 
 
 function generateIntern(data) {
-    console.log(interns);
+    //console.log(interns);
 }
 
 function generatePage(data) {
     console.log(data);
 }
 
-module.exports = generateEngineer;
+module.exports =  generateEngineer;
+//{generateManager, generateEngineer, generateIntern, generatePage};
