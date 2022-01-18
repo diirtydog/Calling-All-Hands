@@ -3,12 +3,10 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const writeFile = require('./src/page-write');
-const generatePage = require('./utils/generateHtml')
+
 const inquirer = require('inquirer');
-//const generateEngineer = require('./utils/generateHtml');
-const managers = [];
+const fs = require('fs');
 const engineers = [];
-const interns = [];
 
 const promptManager = [
         {
@@ -128,31 +126,53 @@ const generateEngineer = () => {
 
     for (let i = 0; i < engineers.length; i++) {
         let eachEmployee = `
-        <div class="employee-card">
-            <div class"card-head">
-                <h2>${engineers[i].name}</h2>
-                <h2>${engineers[i].getRole()}</h2>
-            </div>
-            <div class="card-body">
-                <p>Employee ID: ${engineers[i].id}</p>
-                <p>Email: ${engineers[i].email}</p>
-        `
+        <main>
+            <div class="employee-card">
+                <div class="card-head">
+                    <h2>${engineers[i].name}</h2>
+                    <h2>${engineers[i].getRole()}</h2>
+                </div>
+                <div class="card-body">
+                    <p>Employee ID: ${engineers[i].id}</p>
+                    <a href="mailto:${engineers[i].email}">Email: ${engineers[i].email}</a>`
         if (engineers[i].officeNumber) {
             eachEmployee += `
-            <p>Office Number:${engineers[i].officeNumber}</p>`
+                    <p>Office Number:${engineers[i].officeNumber}</p>`
         }
         
         if (engineers[i].github) {
             eachEmployee += `
-            <a href="https://github.com/${engineers[i].github}>`
+                    <P><a href="https://github.com/${engineers[i].github}">Github</a></p>`
         }
 
         if (engineers[i].school) {
             eachEmployee += `
-            <p>University: ${engineers[i].school}`
+                    <p>University: ${engineers[i].school}</p>`
         }
+
+        eachEmployee += `
+                </div>
+            </div>
+        </main>`
+        pageArray.push(eachEmployee);
     }
-    pageArray.push(eachEmployee);
+    
+
+    const pageEnd = `
+        <footer class="foot">
+            <h3 class="foot-text">&copy; ${new Date().getFullYear()}</h3>
+        </footer>
+    </body>
+    </html>
+    `;
+
+    pageArray.push(pageEnd);
+
+    fs.writeFile(`./dist/team.html`, pageArray.join(''), function (err) {
+        if (err) {
+            return
+        }
+    })
 }
 
 
@@ -167,7 +187,7 @@ const promptIntern = () => {
         {
             type: 'input',
             name: 'id',
-            message: 'What is the name of the intern you would like to add to the team?'
+            message: 'What is the employee id of the intern you would like to add to the team?'
         },
         {
             type: 'input',
@@ -186,16 +206,16 @@ const promptIntern = () => {
             default: false
         }
     ])
-    .then ((data) => {
-        var intern = new Intern(data);
-        interns.push(intern);
-        return data;
+    .then (({ name, id, email, school, confirmAdd }) => {
+        var intern = new Intern(name, id, email, school);
+        engineers.push(intern);
+        return confirmAdd;
     })
-    .then (({ confirmAdd }) => {
+    .then ((confirmAdd) => {
         if (confirmAdd) {
             promptHands();
         } else {
-            return generateIntern(data);
+            return generateEngineer(engineers);
         }
     });
 }
