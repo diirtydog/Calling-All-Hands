@@ -5,7 +5,7 @@ const Manager = require('./lib/Manager');
 const writeFile = require('./src/page-write');
 const generatePage = require('./utils/generateHtml')
 const inquirer = require('inquirer');
-const generateEngineer = require('./utils/generateHtml');
+//const generateEngineer = require('./utils/generateHtml');
 const managers = [];
 const engineers = [];
 const interns = [];
@@ -86,13 +86,13 @@ const promptEngineer = () => {
             default: true
         }
     ])
-    .then ((data) => {
-        var engineer = new Engineer(data);
+    .then (function({ name, id, email, github, confirmAdd }) {
+        var engineer = new Engineer(name, id, email, github);
         engineers.push(engineer);
-        console.log(engineers);
-        return data;
+        // console.log(engineer.name);
+        return confirmAdd;
     })
-    .then(({ confirmAdd }) => {  
+    .then((confirmAdd) => {  
         if (confirmAdd) {
             promptHands();
         } else {
@@ -100,6 +100,62 @@ const promptEngineer = () => {
         };
     })
 }
+
+const generateEngineer = () => {
+    console.log(engineers[0].getRole())
+
+    const pageArray = []
+    const pageStart = `
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Super Fly</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <header>
+            <div class="headerLine">
+                <h1 class="page-title">Super Fly</h1>
+            </div>
+        </header>`
+
+    pageArray.push(pageStart);
+
+    for (let i = 0; i < engineers.length; i++) {
+        let eachEmployee = `
+        <div class="employee-card">
+            <div class"card-head">
+                <h2>${engineers[i].name}</h2>
+                <h2>${engineers[i].getRole()}</h2>
+            </div>
+            <div class="card-body">
+                <p>Employee ID: ${engineers[i].id}</p>
+                <p>Email: ${engineers[i].email}</p>
+        `
+        if (engineers[i].officeNumber) {
+            eachEmployee += `
+            <p>Office Number:${engineers[i].officeNumber}</p>`
+        }
+        
+        if (engineers[i].github) {
+            eachEmployee += `
+            <a href="https://github.com/${engineers[i].github}>`
+        }
+
+        if (engineers[i].school) {
+            eachEmployee += `
+            <p>University: ${engineers[i].school}`
+        }
+    }
+    pageArray.push(eachEmployee);
+}
+
+
 
 const promptIntern = () => {
     return inquirer.prompt([
@@ -147,10 +203,10 @@ const promptIntern = () => {
 
 function init() {
     inquirer.prompt(promptManager)
-    .then((data) => {
-        var manager = new Manager(data);
-        managers.push(manager);
-        return data;
+    .then(function({ name, id, email, officeNumber }) {
+        var manager = new Manager(name, id, email, officeNumber);
+        engineers.push(manager);
+        return;
     })
     .then(promptHands)
     
