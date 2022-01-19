@@ -1,11 +1,9 @@
-const Employee = require('./lib/Employee');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
-const writeFile = require('./src/page-write');
-
 const inquirer = require('inquirer');
 const fs = require('fs');
+const copyFile = require('./src/page-write')
 const engineers = [];
 
 const promptManager = [
@@ -52,7 +50,7 @@ const promptHands = () => {
             promptIntern();
         }
     });
-}
+};
 
 const promptEngineer = () => {
 
@@ -94,88 +92,10 @@ const promptEngineer = () => {
         if (confirmAdd) {
             promptHands();
         } else {
-           return generateEngineer(engineers);
+           return generateEmployee(engineers);
         };
-    })
-}
-
-const generateEngineer = () => {
-    console.log(engineers[0].getRole())
-
-    const pageArray = []
-    const pageStart = `
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Super Fly</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-
-    <body>
-        <header>
-            <div class="headerLine">
-                <h1 class="page-title">Super Fly</h1>
-            </div>
-        </header>`
-
-    pageArray.push(pageStart);
-
-    for (let i = 0; i < engineers.length; i++) {
-        let eachEmployee = `
-        <main>
-            <div class="employee-card">
-                <div class="card-head">
-                    <h2>${engineers[i].name}</h2>
-                    <h2>${engineers[i].getRole()}</h2>
-                </div>
-                <div class="card-body">
-                    <p>Employee ID: ${engineers[i].id}</p>
-                    <a href="mailto:${engineers[i].email}">Email: ${engineers[i].email}</a>`
-        if (engineers[i].officeNumber) {
-            eachEmployee += `
-                    <p>Office Number:${engineers[i].officeNumber}</p>`
-        }
-        
-        if (engineers[i].github) {
-            eachEmployee += `
-                    <P><a href="https://github.com/${engineers[i].github}">Github</a></p>`
-        }
-
-        if (engineers[i].school) {
-            eachEmployee += `
-                    <p>University: ${engineers[i].school}</p>`
-        }
-
-        eachEmployee += `
-                </div>
-            </div>
-        </main>`
-        pageArray.push(eachEmployee);
-    }
-    
-
-    const pageEnd = `
-        <footer class="foot">
-            <h3 class="foot-text">&copy; ${new Date().getFullYear()}</h3>
-        </footer>
-    </body>
-    </html>
-    `;
-
-    pageArray.push(pageEnd);
-
-    fs.writeFile(`./dist/team.html`, pageArray.join(''), function (err) {
-        if (err) {
-            return
-        }
-    })
-}
-
-
+    });
+};
 
 const promptIntern = () => {
     return inquirer.prompt([
@@ -215,11 +135,87 @@ const promptIntern = () => {
         if (confirmAdd) {
             promptHands();
         } else {
-            return generateEngineer(engineers);
+            return generateEmployee(engineers);
         }
     });
-}
+};
 
+const generateEmployee = () => {
+
+    const pageArray = []
+    const pageStart = `
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Super Fly</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Public+Sans:300i,300,500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <header>
+            <div class="headerLine">
+                <h1 class="page-title">Super Fly</h1>
+            </div>
+        </header>
+        <main class="container">`
+
+    pageArray.push(pageStart);
+
+    for (let i = 0; i < engineers.length; i++) {
+        let eachEmployee = `
+            <div class="card display-inline-block">
+                <div class="card-head">
+                    <h2>${engineers[i].name}</h2>
+                    <h2>${engineers[i].getRole()}</h2>
+                </div>
+                <div class="card-body">
+                    <p>Employee ID: ${engineers[i].id}</p>
+                    <a href="mailto:${engineers[i].email}">Email: ${engineers[i].email}</a>`
+        if (engineers[i].officeNumber) {
+            eachEmployee += `
+                    <p>Office Number:${engineers[i].officeNumber}</p>`
+        }
+        
+        if (engineers[i].github) {
+            eachEmployee += `
+                    <P><a href="https://github.com/${engineers[i].github}">Github</a></p>`
+        }
+
+        if (engineers[i].school) {
+            eachEmployee += `
+                    <p>University: ${engineers[i].school}</p>`
+        }
+
+        eachEmployee += `
+                </div>
+            </div>`
+        pageArray.push(eachEmployee);
+    }
+    
+
+    const pageEnd = `
+        </main>
+        <footer class="foot">
+            <h3 class="foot-text">&copy; ${new Date().getFullYear()}</h3>
+        </footer>
+    </body>
+    </html>
+    `;
+
+    pageArray.push(pageEnd);
+
+    fs.writeFile(`./dist/team.html`, pageArray.join(''), function (err) {
+        if (err) {
+            return
+        }
+    })
+};
 
 function init() {
     inquirer.prompt(promptManager)
@@ -229,8 +225,7 @@ function init() {
         return;
     })
     .then(promptHands)
-    
-    
-}
+    .then(copyFile)
+};
     
 init();
