@@ -112,7 +112,15 @@ const promptIntern = () => {
         {
             type: 'input',
             name: 'email',
-            message: 'What is the email address of the intern you would like to add to the team?'
+            message: 'What is the email address of the intern you would like to add to the team?',
+            validate: emailInput => {
+                if (emailInput) {
+                    return true;
+                } else {
+                    console.log('Employee must have a valid email!');
+                    return false;
+                }
+            }
         },
         {
             type: 'input',
